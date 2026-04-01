@@ -10,7 +10,7 @@
 <!-- Shields -->
 <p align="center">
  <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="Awesome" />
- <img src="https://badgen.net/badge/total%20best%20practices/14/blue" alt="npm security best practices" />
+ <img src="https://badgen.net/badge/total%20best%20practices/15/blue" alt="npm security best practices" />
  <img src="https://badgen.net/badge/Last%20Update/Nov%2025/green" />
  <a href="https://www.github.com/lirantal/nodejs-cli-apps-best-practices" target="_blank">
   <img src="https://badgen.net/badge/npm/Security Best Practices/purple" alt="npm Security Best Practices"/>
@@ -51,6 +51,8 @@
 - 4 [Prevent npm lockfile injection](#4-prevent-npm-lockfile-injection)
 - 5 [Use npm ci](#5-use-npm-ci)
 - 6 [Avoid blind npm package upgrades](#6-avoid-blind-npm-package-upgrades)
+  - 6.1. [Override vulnerable transitive dependencies](#61-override-vulnerable-transitive-dependencies)
+- 15 [Pin your package manager version with Corepack](#15-pin-your-package-manager-version-with-corepack)
 
 **Secure Local Development Best Practices:**
 
@@ -745,7 +747,7 @@ Provenance statements provide cryptographic proof of where and how your packages
 
 ### Verify signatures and provenance as a consumer
 
-Publishing provenance is only useful if consumers actually verify it. Since npm 8.12+, `npm audit signatures` checks that every installed package has a valid registry signature and, where available, a valid provenance attestation. This catches tampered packages that were modified after signing.
+Since npm 8.12+, `npm audit signatures` checks that every installed package has a valid registry signature and, where available, a valid provenance attestation. This catches tampered packages that were modified after signing.
 
 ```bash
 $ npm audit signatures
@@ -868,6 +870,42 @@ Furthermore, it has been demonstrated that the source code displayed on the npmj
 > ```
 >
 > Use [npq](https://github.com/lirantal/npq) (see [section 3.1](#31-use-npq-for-hardening-package-installs)) to audit packages before installation, as it consults multiple security data sources beyond what npmjs.org displays.
+
+---
+
+## 15. Pin your package manager version with Corepack
+
+> [!WARNING]
+> If your package manager version is not pinned, different developers and CI environments may run different versions — including ones with known bugs or security issues that could bypass other protections in this guide.
+
+[Corepack](https://nodejs.org/api/corepack.html) ships with Node.js (16.9+) and lets you pin the exact package manager version for your project.
+
+> [!TIP]
+> **Security Best Practice**: Pin your package manager version using the `packageManager` field in `package.json` and enable Corepack so that the correct version is enforced automatically.
+
+> [!NOTE]
+> **How to implement?**
+>
+> Step 1: Enable Corepack (one-time setup per machine):
+> ```bash
+> $ corepack enable
+> ```
+>
+> Step 2: Pin the package manager version in `package.json`:
+> ```json
+> {
+>   "packageManager": "pnpm@10.5.0"
+> }
+> ```
+>
+> Or for Yarn:
+> ```json
+> {
+>   "packageManager": "yarn@4.6.0"
+> }
+> ```
+>
+> With this set, Corepack will automatically download and use the pinned version, and error if a different package manager is used.
 
 ---
 
