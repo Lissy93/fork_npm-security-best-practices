@@ -743,6 +743,22 @@ Provenance statements provide cryptographic proof of where and how your packages
 >
 > Note: publishing to npm with provenance requires npm CLI 9.5.0+ and GitHub Actions or GitLab CI/CD with cloud-hosted runners.
 
+### Verify signatures and provenance as a consumer
+
+Publishing provenance is only useful if consumers actually verify it. Since npm 8.12+, `npm audit signatures` checks that every installed package has a valid registry signature and, where available, a valid provenance attestation. This catches tampered packages that were modified after signing.
+
+```bash
+$ npm audit signatures
+```
+
+Add it to your CI pipeline alongside `npm ci` to catch integrity issues before deployment:
+
+```bash
+$ npm ci && npm audit signatures
+```
+
+For pnpm, the `trustPolicy: no-downgrade` setting (see [section 1.4](#14-pnpm-trust-policy)) provides similar protection by refusing packages whose trust level has decreased compared to earlier versions.
+
 ---
 
 ## 11. Publish with OIDC
