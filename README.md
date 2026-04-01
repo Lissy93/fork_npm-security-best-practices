@@ -602,6 +602,35 @@ Some developers automatically upgrade all dependencies to the latest versions as
 > 2. Use [Snyk Automated Dependency Update PRs](https://docs.snyk.io/scan-with-snyk/pull-requests/snyk-pull-or-merge-requests/upgrade-dependencies-with-automatic-prs-upgrade-prs/upgrade-open-source-dependencies-with-automatic-prs)
 > 3. Use [Dependabot Dependency Update PRs](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide)
 
+### 6.1. Override vulnerable transitive dependencies
+
+When `npm audit` reports a vulnerability in a transitive dependency and the direct dependency maintainer has not yet released a fix, you can force a patched version using package manager overrides.
+
+```jsonc
+// npm (package.json) — requires npm 8.3+
+"overrides": {
+  "vulnerable-pkg": "^2.0.1"
+}
+```
+
+```jsonc
+// pnpm (package.json)
+"pnpm": {
+  "overrides": {
+    "vulnerable-pkg": "^2.0.1"
+  }
+}
+```
+
+```jsonc
+// yarn (package.json)
+"resolutions": {
+  "vulnerable-pkg": "^2.0.1"
+}
+```
+
+Review overrides regularly and remove them once the direct dependency has updated, as stale overrides can mask compatibility issues.
+
 ---
 
 ## 7. No plaintext secrets in .env files
